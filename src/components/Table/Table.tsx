@@ -50,6 +50,8 @@ type ActiveRow = {
   onChange: (id: string | undefined) => void;
 };
 
+type onRowHover = ({ id, e }: { id: string | undefined; e: React.MouseEvent }) => void;
+
 export type TableRow = {
   [key: string]: React.ReactNode;
   id: string;
@@ -98,7 +100,7 @@ export type Props<T extends TableRow> = {
   borderBetweenColumns?: boolean;
   emptyRowsPlaceholder?: React.ReactNode;
   className?: string;
-  onRowHover?: ({ id, event }: { id: string | undefined; event: React.MouseEvent }) => void;
+  onRowHover?: onRowHover;
 };
 
 export type SortingState<T extends TableRow> = {
@@ -413,8 +415,8 @@ export const Table = <T extends TableRow>({
             <div
               key={row.id}
               className={cnTable('CellsRow', { nth })}
-              onMouseEnter={(event) => onRowHover && onRowHover({ id: row.id, event })}
-              onMouseLeave={(event) => onRowHover && onRowHover({ id: undefined, event })}
+              onMouseEnter={(e) => onRowHover && onRowHover({ id: row.id, e })}
+              onMouseLeave={(e) => onRowHover && onRowHover({ id: undefined, e })}
             >
               {columnsWithMetaData(lowHeaders).map((column: TableColumn<T>, columnIdx: number) => {
                 return (
