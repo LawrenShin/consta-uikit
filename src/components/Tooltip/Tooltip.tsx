@@ -5,6 +5,7 @@ import React from 'react';
 import { ClickOutsideHandler } from '../../hooks/useClickOutside/useClickOutside';
 import { cn } from '../../utils/bem';
 import { Direction, Popover, PositioningProps } from '../Popover/Popover';
+import { Text } from '../Text/Text';
 import { useTheme } from '../Theme/Theme';
 
 const ARROW_SIZE = 6;
@@ -12,12 +13,13 @@ const ARROW_OFFSET = 8;
 
 const cnTooltip = cn('Tooltip');
 
-export const sizes = ['s', 'm', 'l'] as const;
+export const sizes = ['m', 's', 'l'] as const;
+export const sizesDefault = sizes[0];
 
-type Size = typeof sizes[number];
+export type Size = typeof sizes[number];
 
 type Props = {
-  size: Size;
+  size?: Size;
   direction?: Direction;
   spareDirection?: Direction;
   possibleDirections?: readonly Direction[];
@@ -27,8 +29,16 @@ type Props = {
   className?: string;
 } & PositioningProps;
 
+function renderChildren(children: React.ReactNode): React.ReactNode {
+  return typeof children === 'string' || typeof children === 'number' ? (
+    <Text size="xs">{children}</Text>
+  ) : (
+    children
+  );
+}
+
 export const Tooltip = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
-  const { children, size, className, ...rest } = props;
+  const { children, size = sizesDefault, className, ...rest } = props;
   const { themeClassNames } = useTheme();
 
   return (
@@ -44,7 +54,7 @@ export const Tooltip = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
         >
           <div className={cnTooltip('Background')} />
           <div className={cnTooltip('Arrow', { direction })} />
-          <div className={cnTooltip('Content', { size })}>{children}</div>
+          <div className={cnTooltip('Content', { size })}>{renderChildren(children)}</div>
         </div>
       )}
     </Popover>
